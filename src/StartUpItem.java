@@ -1,5 +1,6 @@
 public class StartUpItem {
 
+	//might be useful an id for removing and editing purposes
 	boolean active;
 	String cmd;
 

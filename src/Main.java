@@ -13,5 +13,14 @@ public class Main {
 				}
 			}
 		});
+		StartUpItemManager temp = new StartUpItemManager();
+		temp.addItemToList("lol1");
+		temp.addItemToList("lol2");
+		temp.addItemToList("lol3");
+		temp.addItemToList("lol4");
+		System.out.println("Size: " + temp.getItemListSize());
+		for(int i = 0; i < temp.getItemListSize(); i++) {
+			System.out.println("Item: " + i + " : " + temp.getItem(i).getCommand());
+		}
 	}
 }
