@@ -3,12 +3,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-public class Menu extends JFrame {
-
+public class Menu extends JFrame
+{
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-	public Menu() {
+	public Menu()
+	{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 450, 300);
 		setLocationRelativeTo(null); 

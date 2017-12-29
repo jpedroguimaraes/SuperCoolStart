@@ -1,28 +1,43 @@
-public class StartUpItem {
+import java.io.Serializable;
 
-	//might be useful an id for removing and editing purposes
+public class StartUpItem implements Serializable
+{
+	private static final long serialVersionUID = 1L;
+	static int id = 0;
+	int itemId;
 	boolean active;
 	String cmd;
 
-	public void setStatus(boolean newStatus) {
+	public int getId()
+	{
+		return itemId;
+	}
+
+	public void setStatus(boolean newStatus)
+	{
 		active = newStatus;
 	}
 
-	public boolean getStatus() {
+	public boolean getStatus()
+	{
 		return active;
 	}
 
-	public void setCommand(String newCmd) {
+	public void setCommand(String newCmd)
+	{
 		cmd = newCmd;
 	}
 
-	public String getCommand() {
+	public String getCommand()
+	{
 		return cmd;
 	}
 
-	public StartUpItem(String newCmd) {
+	public StartUpItem(String newCmd)
+	{
+		itemId = id;
+		id++;
 		active = true;
 		cmd = newCmd;
 	}
-
 }

@@ -6,12 +6,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
-public class MenuPanel extends JPanel {
-
+public class MenuPanel extends JPanel
+{
 	private static final long serialVersionUID = 1L;
 	private JTextField textField;
 
-	public MenuPanel() {
+	public MenuPanel()
+	{
 		setLayout(null);
 
 		JCheckBox chckbxNewCheckBox = new JCheckBox("");
@@ -22,7 +23,7 @@ public class MenuPanel extends JPanel {
 		textField.setBounds(141, 39, 275, 19);
 		add(textField);
 		textField.setColumns(100);
-		
+
 		JButton btnStart = new JButton("START");
 		btnStart.addMouseListener(new MouseAdapter() {
 			@Override
@@ -40,6 +41,5 @@ public class MenuPanel extends JPanel {
 		add(btnStart);
 
         this.setVisible(true);
-
 	}
 }

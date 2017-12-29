@@ -1,43 +1,139 @@
-import java.util.Vector;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-public class StartUpItemManager {
+public class StartUpItemManager
+{
+	List<StartUpItem> itemList = new ArrayList<StartUpItem>();
 
-	Vector<StartUpItem> itemList;
-
-	public StartUpItem getItem(int index) {
-		return itemList.get(index); //deprecated?
+	public StartUpItem getItem(int index)
+	{
+		return itemList.get(index);
 	}
 
-	public void clearItemList() {
-		itemList.clear(); //doesn't work? maybe new version needed
+	public boolean itemWithThisIdExists(int itemId)
+	{
+		int i = 0;
+		do
+		{
+			if(itemId == getItem(i).getId())
+				return true;
+			i++;
+		} while(i < getItemListSize());
+		return false;
 	}
 
-	public void addItemToList(String newItem) {
-		itemList.add(new StartUpItem(newItem)); //also doesn't work? wtf? might be better to switch to arrays
+	public void clearItemList()
+	{
+		itemList.clear();
 	}
 
-	public void removeItemFromList() {
-		//waiting on id decision on StartUpItem
+	public void addItemToList(String newItem)
+	{
+		itemList.add(new StartUpItem(newItem));
 	}
 
-	public int getItemListSize() {
-		return 2;//return itemList.size(); also doesnt work????
+	public boolean removeItemFromList(StartUpItem itemToBeRemoved)
+	{
+		int itemId = itemToBeRemoved.getId();
+		if(itemWithThisIdExists(itemId))
+		{
+			itemList.remove(itemToBeRemoved);
+			if(itemWithThisIdExists(itemId))
+				return false;
+			else
+				return true;
+		}
+		return false;
 	}
 
-	public Vector<StartUpItem> getItemList() {
+	public int getItemListSize()
+	{
+		return itemList.size();
+	}
+
+	public List<StartUpItem> getItemList()
+	{
 		return itemList;
 	}
 
-	public void saveItems() {
-		
+	public boolean saveItems()
+	{
+		try
+		{
+		    FileOutputStream fos = new FileOutputStream("items.dat");
+		    ObjectOutputStream oos = new ObjectOutputStream(fos);
+		    oos.writeObject(itemList);
+		    oos.close();
+		    return true;
+		}
+		catch (FileNotFoundException e)
+		{
+		    e.printStackTrace();
+		    return false;
+		}
+		catch (IOException e)
+		{
+		    e.printStackTrace();
+		    return false;
+		}
 	}
 
-	public void loadItems() {
-		
+	@SuppressWarnings("unchecked")
+	public boolean loadItems()
+	{
+		try
+		{
+			File f = new File("items.dat");
+			if(!f.exists())
+				return false;
+		    FileInputStream fis = new FileInputStream("items.dat");
+		    ObjectInputStream ois = new ObjectInputStream(fis);
+		    Object obj = ois.readObject();
+		    ois.close();
+		    if (obj instanceof ArrayList) 
+		    	itemList = (ArrayList<StartUpItem>) obj;
+		    else 
+		    {
+		    	clearItemList();
+		    	return false;
+		    }
+		    return true;
+		}
+		catch (FileNotFoundException e)
+		{
+		    e.printStackTrace();
+		    return false;
+		}
+		catch (IOException e)
+		{
+		    e.printStackTrace();
+		    return false;
+		}
+		catch (ClassNotFoundException e)
+		{
+		    e.printStackTrace();
+		    return false;
+		}
 	}
 
-	public StartUpItemManager() {
-		//clearItemList();
+	public void startItems()
+	{
+		for(StartUpItem item: itemList)
+		{
+			System.out.println("Item: " + item.getId() + " : " + item.getCommand() + " (" + item.getStatus() + ")");
+		}
+	}
+
+	public StartUpItemManager()
+	{
+		clearItemList();
 		loadItems();
 	}
 }
