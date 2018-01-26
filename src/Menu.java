@@ -16,13 +16,13 @@ import java.awt.event.KeyEvent;
 public class Menu extends JFrame
 {
 	private static final long serialVersionUID = 1L;
-	public StartUpItemManager startManager;
+	public StartUpItemManager itemManager;
 	private JPanel contentPane;
 	private JTextField textField;
 
 	public Menu(StartUpItemManager sm)
 	{
-		startManager = sm;
+		itemManager = sm;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 700, 500);
 		setLocationRelativeTo(null);
@@ -36,7 +36,7 @@ public class Menu extends JFrame
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
-				startManager.startItems();
+				itemManager.startItems();
 			}
 		});
 		btnStart.setBounds(168, 27, 200, 50);
@@ -53,14 +53,27 @@ public class Menu extends JFrame
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
-				//procedure to add new item
+				if(!(textField.getText() == null) && !textField.getText().trim().isEmpty())
+				{
+					itemManager.addItemToList(textField.getText().toString());
+					textField.setText(null);
+				}
 			}
 		});
 		btnAdd.setBounds(460, 100, 70, 20);
 		contentPane.add(btnAdd);
 		
-		String [] header={"active","command"};
-        String [][] data={{"akash","20"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"},{"pankaj","24"}};
+		String [] header = {"id","active","command"};
+        String [][] data = new String [itemManager.getItemListSize()][3];
+        
+        int i = 0;
+        for(StartUpItem item: itemManager.getItemList())
+		{
+        	data[i][0] = String.valueOf(item.getId());
+        	data[i][1] = item.getStatus()?"yes":"no";
+        	data[i][2] = item.getCommand();
+        	i++;
+        }
         
         DefaultTableModel model = new DefaultTableModel(data,header)
         {
@@ -68,7 +81,7 @@ public class Menu extends JFrame
 			@Override
             public boolean isCellEditable(int row, int column)
 			{
-               return false;
+				return false;
             }
         };
         final JTable table = new JTable(model);
@@ -77,10 +90,9 @@ public class Menu extends JFrame
         	@Override
         	public void mouseClicked(MouseEvent e)
         	{
-        		System.out.println(table.rowAtPoint(e.getPoint()) + ":" + table.columnAtPoint(e.getPoint()));
-        		if(table.columnAtPoint(e.getPoint()) == 0)
+        		if(table.columnAtPoint(e.getPoint()) == 1 && table.getSelectedRow() > -1 && table.getSelectedRow() < itemManager.getItemListSize())
         		{
-        			//toggle do estado do comando
+        			itemManager.toggleItemStatus(Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString()));
         		}
         	}
         });
@@ -89,11 +101,9 @@ public class Menu extends JFrame
         	@Override
         	public void keyPressed(KeyEvent e)
         	{
-        		if(e.getKeyCode() == KeyEvent.VK_DELETE)
+        		if(e.getKeyCode() == KeyEvent.VK_DELETE && table.getSelectedRow() > -1 && table.getSelectedRow() < itemManager.getItemListSize())
         		{
-        			//o que fazer para garantir que o que esta na linha x da tabela é o que esta na posição x na lista?
-        			//incluir id do objecto na tabela? coluna escondida?
-        			//startManager.removeItemFromList(ojecto);
+        			itemManager.removeItemFromList(Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString()));
         		}
         	}
         });

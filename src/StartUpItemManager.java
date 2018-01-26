@@ -12,20 +12,38 @@ public class StartUpItemManager
 {
 	List<StartUpItem> itemList = new ArrayList<StartUpItem>();
 
-	public StartUpItem getItem(int index)
-	{
-		return itemList.get(index);
-	}
-
 	public boolean itemWithThisIdExists(int itemId)
 	{
 		int i = 0;
 		do
 		{
-			if(itemId == getItem(i).getId())
+			if(itemId == itemList.get(i).getId())
 				return true;
 			i++;
 		} while(i < getItemListSize());
+		return false;
+	}
+	
+	public boolean toggleItemStatus(int itemId)
+	{
+		if(itemWithThisIdExists(itemId))
+		{
+			boolean changeCompleted = false;
+			for(StartUpItem item: getItemList())
+			{
+				if(itemId == item.getId())
+				{
+					item.toggleStatus();
+					saveItems();
+					changeCompleted = true;
+					break;
+				}
+			}
+			if(itemWithThisIdExists(itemId) && changeCompleted)
+				return true;
+			else
+				return false;
+		}
 		return false;
 	}
 
@@ -37,15 +55,26 @@ public class StartUpItemManager
 	public void addItemToList(String newItem)
 	{
 		itemList.add(new StartUpItem(newItem));
+		startItems();
+		saveItems();
 	}
 
-	public boolean removeItemFromList(StartUpItem itemToBeRemoved)
+	public boolean removeItemFromList(int itemId)
 	{
-		int itemId = itemToBeRemoved.getId();
 		if(itemWithThisIdExists(itemId))
 		{
-			itemList.remove(itemToBeRemoved);
-			if(itemWithThisIdExists(itemId))
+			boolean changeCompleted = false;
+			for(StartUpItem item: getItemList())
+			{
+				if(itemId == item.getId())
+				{
+					itemList.remove(item);
+					saveItems();
+					changeCompleted = true;
+					break;
+				}
+			}
+			if(itemWithThisIdExists(itemId) && changeCompleted)
 				return false;
 			else
 				return true;
@@ -97,8 +126,11 @@ public class StartUpItemManager
 		    ObjectInputStream ois = new ObjectInputStream(fis);
 		    Object obj = ois.readObject();
 		    ois.close();
-		    if (obj instanceof ArrayList) 
+		    if (obj instanceof ArrayList)
+		    {
 		    	itemList = (ArrayList<StartUpItem>) obj;
+		    	StartUpItem.id = getItemListSize();
+		    }
 		    else 
 		    {
 		    	clearItemList();
@@ -127,6 +159,7 @@ public class StartUpItemManager
 	{
 		for(StartUpItem item: itemList)
 		{
+			//executar sequencialmente os que estao activos
 			System.out.println("Item: " + item.getId() + " : " + item.getCommand() + " (" + item.getStatus() + ")");
 			/*String[] args = new String[] {"/bin/bash", "-c", "gnome-terminal --working-directory=/home/jpguimaraes/project/accounting_provisory & disown"};
 			try {

@@ -13,9 +13,9 @@ public class StartUpItem implements Serializable
 		return itemId;
 	}
 
-	public void setStatus(boolean newStatus)
+	public void toggleStatus()
 	{
-		active = newStatus;
+		active = !active;
 	}
 
 	public boolean getStatus()
