@@ -16,9 +16,40 @@ import java.awt.event.KeyEvent;
 public class Menu extends JFrame
 {
 	private static final long serialVersionUID = 1L;
-	public StartUpItemManager itemManager;
+	private StartUpItemManager itemManager;
 	private JPanel contentPane;
 	private JTextField textField;
+	private JTable table;
+	
+	public void updateTable()
+	{
+		String [] header = {"id","active","command"};
+        String [][] data = new String [itemManager.getItemListSize()][3];
+        
+        int i = 0;
+        for(StartUpItem item: itemManager.getItemList())
+		{
+        	data[i][0] = String.valueOf(item.getId());
+        	data[i][1] = item.getStatus()?"yes":"no";
+        	data[i][2] = item.getCommand();
+        	i++;
+        }
+        
+        DefaultTableModel model = new DefaultTableModel(data,header)
+        {
+			private static final long serialVersionUID = 1L;
+			@Override
+            public boolean isCellEditable(int row, int column)
+			{
+				return false;
+            }
+        };
+        table.setModel(model);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(1).setWidth(50);
+	}
 
 	public Menu(StartUpItemManager sm)
 	{
@@ -57,34 +88,15 @@ public class Menu extends JFrame
 				{
 					itemManager.addItemToList(textField.getText().toString());
 					textField.setText(null);
+        			updateTable();
 				}
 			}
 		});
 		btnAdd.setBounds(460, 100, 70, 20);
 		contentPane.add(btnAdd);
 		
-		String [] header = {"id","active","command"};
-        String [][] data = new String [itemManager.getItemListSize()][3];
-        
-        int i = 0;
-        for(StartUpItem item: itemManager.getItemList())
-		{
-        	data[i][0] = String.valueOf(item.getId());
-        	data[i][1] = item.getStatus()?"yes":"no";
-        	data[i][2] = item.getCommand();
-        	i++;
-        }
-        
-        DefaultTableModel model = new DefaultTableModel(data,header)
-        {
-			private static final long serialVersionUID = 1L;
-			@Override
-            public boolean isCellEditable(int row, int column)
-			{
-				return false;
-            }
-        };
-        final JTable table = new JTable(model);
+		table = new JTable();
+        updateTable();
         table.addMouseListener(new MouseAdapter()
         {
         	@Override
@@ -93,6 +105,7 @@ public class Menu extends JFrame
         		if(table.columnAtPoint(e.getPoint()) == 1 && table.getSelectedRow() > -1 && table.getSelectedRow() < itemManager.getItemListSize())
         		{
         			itemManager.toggleItemStatus(Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString()));
+        			updateTable();
         		}
         	}
         });
@@ -104,10 +117,10 @@ public class Menu extends JFrame
         		if(e.getKeyCode() == KeyEvent.VK_DELETE && table.getSelectedRow() > -1 && table.getSelectedRow() < itemManager.getItemListSize())
         		{
         			itemManager.removeItemFromList(Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString()));
+        			updateTable();
         		}
         	}
         });
-        table.getColumnModel().getColumn(0).setMaxWidth(50);
         table.setFillsViewportHeight(true);
         JScrollPane js = new JScrollPane(table);
         js.setBounds(85, 150, 450, 200);

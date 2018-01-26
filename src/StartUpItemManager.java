@@ -14,13 +14,9 @@ public class StartUpItemManager
 
 	public boolean itemWithThisIdExists(int itemId)
 	{
-		int i = 0;
-		do
-		{
-			if(itemId == itemList.get(i).getId())
+		for(StartUpItem item: getItemList())
+			if(itemId == item.getId())
 				return true;
-			i++;
-		} while(i < getItemListSize());
 		return false;
 	}
 	
