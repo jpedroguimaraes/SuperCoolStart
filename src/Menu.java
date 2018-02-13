@@ -41,14 +41,28 @@ public class Menu extends JFrame
 			@Override
             public boolean isCellEditable(int row, int column)
 			{
-				return false;
+				return column == 2;
             }
+			
+		    public void setValueAt(Object value, int row, int col)
+		    {
+		        if(!value.toString().isEmpty() && !value.toString().trim().isEmpty() && row > -1 && row < itemManager.getItemListSize() && col == 2)
+        		{
+		        	itemManager.editItemCommand(Integer.parseInt(table.getValueAt(row, 0).toString()), value.toString());
+        		}
+    			updateTable();
+		    }
         };
-        table.setModel(model);
+        
+        table.setModel(model);        
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setPreferredWidth(0);
+        table.getColumnModel().getColumn(1).setMaxWidth(50);
+        table.getColumnModel().getColumn(1).setMinWidth(50);
         table.getColumnModel().getColumn(1).setWidth(50);
+        table.getColumnModel().getColumn(1).setPreferredWidth(50);
 	}
 
 	public Menu(StartUpItemManager sm)

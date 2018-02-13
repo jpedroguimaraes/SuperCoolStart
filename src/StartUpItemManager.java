@@ -42,6 +42,29 @@ public class StartUpItemManager
 		}
 		return false;
 	}
+	
+	public boolean editItemCommand(int itemId, String newCmd)
+	{
+		if(itemWithThisIdExists(itemId))
+		{
+			boolean changeCompleted = false;
+			for(StartUpItem item: getItemList())
+			{
+				if(itemId == item.getId())
+				{
+					item.setCommand(newCmd);
+					saveItems();
+					changeCompleted = true;
+					break;
+				}
+			}
+			if(itemWithThisIdExists(itemId) && changeCompleted)
+				return true;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public void clearItemList()
 	{
@@ -51,7 +74,6 @@ public class StartUpItemManager
 	public void addItemToList(String newItem)
 	{
 		itemList.add(new StartUpItem(newItem));
-		startItems();
 		saveItems();
 	}
 
