@@ -177,15 +177,15 @@ public class StartUpItemManager
 	{
 		for(StartUpItem item: itemList)
 		{
-			//executar sequencialmente os que estao activos
-			System.out.println("Item: " + item.getId() + " : " + item.getCommand() + " (" + item.getStatus() + ")");
-			/*String[] args = new String[] {"/bin/bash", "-c", "gnome-terminal --working-directory=/home/jpguimaraes/project/accounting_provisory & disown"};
-			try {
-				Process proc = new ProcessBuilder(args).start();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}*/
+			if(item.getStatus())
+			{
+				String[] args = new String[] {"/bin/bash", "-c", item.getCommand() + " & disown"};
+				try {
+					new ProcessBuilder(args).start();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
 		}
 	}
 
